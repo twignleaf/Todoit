@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoitViewController: UITableViewController {
 
-    let itemArray = ["1","2","3"]
+    var itemArray = ["1","2","3"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,5 +53,38 @@ class ToDoitViewController: UITableViewController {
         
     }
 
+    //MARK - Add New Items
+ 
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add New ToDoit Item", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+            // What will happen once the user clicks the Add Item button on the UIAlert
+            
+            // Use self when in closure
+            self.itemArray.append(textField.text!)
+            print(textField.text)
+            
+            // Reload tableView to show data
+            self.tableView.reloadData()
+        }
+        
+            alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            print(alertTextField.text)
+            
+            // extenting scope of alertTextField
+            textField = alertTextField
+            
+        }
+        
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 

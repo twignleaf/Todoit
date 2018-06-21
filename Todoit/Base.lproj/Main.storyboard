@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--To Doit View Controller-->
+        <!--ToDoit-->
         <scene sceneID="asj-fx-qId">
             <objects>
                 <tableViewController id="lBh-hz-RF7" customClass="ToDoitViewController" customModule="Todoit" customModuleProvider="target" sceneMemberID="viewController">
@@ -32,7 +32,14 @@
                             <outlet property="delegate" destination="lBh-hz-RF7" id="Zld-EB-i7q"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="LBD-rB-I4z"/>
+                    <navigationItem key="navigationItem" title="ToDoit" id="LBD-rB-I4z">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="cMm-eL-57I">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="lBh-hz-RF7" id="WvN-bx-IcM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bn6-1v-bve" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -46,6 +53,11 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="U4u-bz-j3m">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.45009386540000001" green="0.98132258650000004" blue="0.4743030667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" name="AppleSDGothicNeo-SemiBold" family="Apple SD Gothic Neo" pointSize="20"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

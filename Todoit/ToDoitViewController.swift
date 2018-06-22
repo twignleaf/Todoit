@@ -12,9 +12,16 @@ class ToDoitViewController: UITableViewController {
 
     var itemArray = ["1","2","3"]
     
+    // Using UserDefaults to persist data
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        // Retrieving data, setting itemArray to the array in the user defaults
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
     }
 
     //MARK - TableView Datasource Methods
@@ -66,7 +73,9 @@ class ToDoitViewController: UITableViewController {
             
             // Use self when in closure
             self.itemArray.append(textField.text!)
-            print(textField.text)
+            print(textField.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
             
             // Reload tableView to show data
             self.tableView.reloadData()
@@ -74,7 +83,7 @@ class ToDoitViewController: UITableViewController {
         
             alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
-            print(alertTextField.text)
+            print(alertTextField.text!)
             
             // extenting scope of alertTextField
             textField = alertTextField

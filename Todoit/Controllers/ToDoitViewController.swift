@@ -12,32 +12,41 @@ class ToDoitViewController: UITableViewController {
 
     var itemArray = [Item]()
     
-    // Using UserDefaults to persist data
-    let defaults = UserDefaults.standard
+    // encoding and decoding filepath, converted array Items into plist file
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    // Using UserDefaults to persist data [use only for small peices of data with limited sets of data types, it is very inefficient as it has to load up the entire plist before reading the properties you want]  - UserDefaults cannot take any custom types or objects
+//    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print(dataFilePath!)
+        
+        loadItems()
 
-        let newItem = Item()
-        newItem.title = "1"
-        itemArray.append(newItem)
+        // 1.
+//        let newItem = Item()
+//        newItem.title = "1"
+//        itemArray.append(newItem)
+//
+//        let newItem2 = Item()
+//        newItem2.title = "2"
+//        itemArray.append(newItem2)
+//
+//        let newItem3 = Item()
+//        newItem3.title = "3"
+//        itemArray.append(newItem3)
         
-        let newItem2 = Item()
-        newItem2.title = "2"
-        itemArray.append(newItem2)
         
-        let newItem3 = Item()
-        newItem3.title = "3"
-        itemArray.append(newItem3)
-        
-        // Retrieving data, from itemArray by using UserDefaults key TodoListArray
+        // 1. Retrieving data, from itemArray by using UserDefaults key TodoListArray
 //        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
 //            itemArray = items
 //        }
         
-        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-            itemArray = items
-        }
+//        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
+//            itemArray = items
+//        }
     }
 
     //MARK - TableView Datasource Methods
@@ -56,12 +65,13 @@ class ToDoitViewController: UITableViewController {
         
         cell.textLabel?.text = item.title
         
+        // 2.
+        cell.accessoryType = item.done ? .checkmark : .none
+        
         // Ternery Operator ==>
         // value = condition ? valueIfTrue : valueIfFalse
         
-        cell.accessoryType = item.done ? .checkmark : .none
-        
-        // Using done property to display checkmark on individual itemArray
+        // 1. Using done property to display checkmark on individual itemArray
 //        if item.done == true {
 //            cell.accessoryType = .checkmark
 //        } else {
@@ -79,9 +89,7 @@ class ToDoitViewController: UITableViewController {
         // Printing selected items in itemArray by indexPath.row
 //        print(itemArray[indexPath.row])
         
-        // Setting the done property opposite of what is is right now, Ternary Operator
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-        
+        // 1.
 //        if itemArray[indexPath.row].done == false {
 //            itemArray[indexPath.row].done = true
 //        } else {
@@ -91,7 +99,7 @@ class ToDoitViewController: UITableViewController {
         //Ternary opeartor ==>
         // value = condition ? valueIfTrue : valueIfFalse
         
-        // If statement to check if tableView is already checkmarked, if so, rm it
+        // 1. If statement to check if tableView is already checkmarked, if so, rm it
 //        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
 //
 //            tableView.cellForRow(at: indexPath)?.accessoryType = .none
@@ -100,7 +108,10 @@ class ToDoitViewController: UITableViewController {
 //            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
 //        }
 
-        tableView.reloadData()
+        // 2. Setting the done property opposite of what is is right now, Ternary Operator
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -123,10 +134,11 @@ class ToDoitViewController: UITableViewController {
             // Use self when in closure
             self.itemArray.append(newItem)
             
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            self.saveItems()
             
-            // Reload tableView to show data
-            self.tableView.reloadData()
+            // 1. for using UserDefaults
+//            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+
         }
         
             alert.addTextField { (alertTextField) in
@@ -135,7 +147,6 @@ class ToDoitViewController: UITableViewController {
             
             // extenting scope of alertTextField
             textField = alertTextField
-            
         }
         
         alert.addAction(action)
@@ -143,5 +154,36 @@ class ToDoitViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    //MARK - Model Manipulation Methods
+    
+    func saveItems() {
+    
+        // Encoding and assigning data
+        let encoder = PropertyListEncoder()
+    
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+        
+        // Reload tableView to show data
+        self.tableView.reloadData()
+    }
+    
+    // Decoding and retrieving data
+    func loadItems() {
+        
+        // try turns result into optional
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item array, \(error)")
+            }
+        }
+    }
 }
 
